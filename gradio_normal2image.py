@@ -24,6 +24,7 @@ ddim_sampler = DDIMSampler(model)
 
 
 def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, detect_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, bg_threshold):
+    print(torch.cuda.is_available())
     with torch.no_grad():
         input_image = HWC3(input_image)
         _, detected_map = apply_midas(resize_image(input_image, detect_resolution), bg_th=bg_threshold)
@@ -68,7 +69,7 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
 input_image_path = r"/cluster/work/cvl/denfan/diandian/testing.jpg"
 save_path = r"/cluster/work/cvl/denfan/diandian/ControlNet/results/"
-prompt = "fish"
+prompt = "hidden fish in the middle"
 seed = -1
 # cv2.imread: h,w,c: 0-255
 input_image = cv2.imread(input_image_path)
@@ -78,8 +79,8 @@ scale = 9.0
 strength = 1.0
 guess_mode = False
 ddim_steps = 20
-detect_resolution = 256
-image_resolution = 256
+detect_resolution = 384
+image_resolution = 512
 num_samples = 1
 a_prompt = 'best quality, extremely detailed'
 n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality'

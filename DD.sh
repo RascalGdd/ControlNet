@@ -1,2 +1,3 @@
-source /cluster/home/denfan/venv/ddenv/bin/activate
-python 
+export PYTHONPATH=
+source /cluster/home/denfan/venv/DDenv/bin/activate
+python gradio_normal2image.py
