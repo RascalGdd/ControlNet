@@ -27,7 +27,8 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
     print(torch.cuda.is_available())
     with torch.no_grad():
         input_image = HWC3(input_image)
-        _, detected_map = apply_midas(resize_image(input_image, detect_resolution), bg_th=bg_threshold)
+        # _, detected_map = apply_midas(resize_image(input_image, detect_resolution), bg_th=bg_threshold)
+        detected_map = resize_image(input_image, detect_resolution)
         detected_map = HWC3(detected_map)
         img = resize_image(input_image, image_resolution)
         H, W, C = img.shape
