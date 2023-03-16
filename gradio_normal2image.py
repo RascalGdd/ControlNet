@@ -1,13 +1,13 @@
 from share import *
 import config
-
+import PIL.Image as Image
 import cv2
 import einops
 # import gradio as gr
 import numpy as np
 import torch
 import random
-
+import os
 from pytorch_lightning import seed_everything
 from annotator.util import resize_image, HWC3
 from annotator.midas import MidasDetector
@@ -66,9 +66,9 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
         results = [x_samples[i] for i in range(num_samples)]
     return [detected_map] + results
 
-input_image_path = ""
-save_path = ""
-prompt = ""
+input_image_path = r"/cluster/work/cvl/denfan/diandian/testing.jpg"
+save_path = r"/cluster/work/cvl/denfan/diandian/ControlNet/results/"
+prompt = "fish"
 seed = -1
 # cv2.imread: h,w,c: 0-255
 input_image = cv2.imread(input_image_path)
@@ -87,8 +87,10 @@ n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra dig
 output = process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, detect_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, bg_threshold)
 # cv2.imwrite(os.path.join(save_path, "template.jpg"), output[0])
 # cv2.imwrite(os.path.join(save_path, "generated.jpg"), output[1])
-
-
+template = Image.fromarray(output[0], "RGB")
+generated = Image.fromarray(output[1], "RGB")
+template.save(os.path.join(save_path, "template.jpg"))
+generated.save(os.path.join(save_path, "generated.jpg"))
 
 # block = gr.Blocks().queue()
 # with block:
