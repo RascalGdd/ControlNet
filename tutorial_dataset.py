@@ -4,7 +4,7 @@ import numpy as np
 import os
 from torch.utils.data import Dataset
 
-json_path = r'C:\Users\guodi\Desktop\camouflaged_dataset\camo_diff\testjson_dict.json'
+json_path = r'./datasets/camo_diff/testjson_dict.json'
 
 class MyDataset(Dataset):
     def __init__(self):
@@ -24,8 +24,8 @@ class MyDataset(Dataset):
         prompt = item['prompt']
 
 
-        source = cv2.imread(os.path.join(r"C:\Users\guodi\Desktop\camouflaged_dataset", source_filename))
-        target = cv2.imread(os.path.join(r"C:\Users\guodi\Desktop\camouflaged_dataset", target_filename))
+        source = cv2.imread(os.path.join(r"./datasets", source_filename))
+        target = cv2.imread(os.path.join(r"./datasets", target_filename))
 
         # Do not forget that OpenCV read images in BGR order.
         source = cv2.cvtColor(source, cv2.COLOR_BGR2RGB)
