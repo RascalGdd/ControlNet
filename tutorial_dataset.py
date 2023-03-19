@@ -24,8 +24,8 @@ class MyDataset(Dataset):
         prompt = item['prompt']
 
 
-        source = cv2.imread(os.path.join(r"./datasets", source_filename))
-        target = cv2.imread(os.path.join(r"./datasets", target_filename))
+        source = cv2.imread(os.path.join(r"./datasets", source_filename.replace("\\", "/")))
+        target = cv2.imread(os.path.join(r"./datasets", target_filename.replace("\\", "/")))
 
         # Do not forget that OpenCV read images in BGR order.
         source = cv2.cvtColor(source, cv2.COLOR_BGR2RGB)
