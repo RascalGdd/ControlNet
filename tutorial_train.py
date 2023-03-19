@@ -1,5 +1,5 @@
 from share import *
-
+import os
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 from tutorial_dataset import MyDataset
@@ -9,7 +9,7 @@ from cldm.model import create_model, load_state_dict
 
 # Configs
 resume_path = './models/control_sd15_ini.ckpt'
-batch_size = 4
+batch_size = 1
 logger_freq = 300
 learning_rate = 1e-5
 sd_locked = True

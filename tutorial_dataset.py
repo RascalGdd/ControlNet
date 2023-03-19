@@ -1,16 +1,17 @@
 import json
 import cv2
 import numpy as np
-
+import os
 from torch.utils.data import Dataset
 
+json_path = r'C:\Users\guodi\Desktop\camouflaged_dataset\camo_diff\testjson_dict.json'
 
 class MyDataset(Dataset):
     def __init__(self):
         self.data = []
-        with open('./training/fill50k/prompt.json', 'rt') as f:
+        with open(json_path, 'rt') as f:
             for line in f:
-                self.data.append(json.loads(line))
+                self.data = json.loads(line)
 
     def __len__(self):
         return len(self.data)
@@ -22,8 +23,9 @@ class MyDataset(Dataset):
         target_filename = item['target']
         prompt = item['prompt']
 
-        source = cv2.imread('./training/fill50k/' + source_filename)
-        target = cv2.imread('./training/fill50k/' + target_filename)
+
+        source = cv2.imread(os.path.join(r"C:\Users\guodi\Desktop\camouflaged_dataset", source_filename))
+        target = cv2.imread(os.path.join(r"C:\Users\guodi\Desktop\camouflaged_dataset", target_filename))
 
         # Do not forget that OpenCV read images in BGR order.
         source = cv2.cvtColor(source, cv2.COLOR_BGR2RGB)
@@ -37,3 +39,13 @@ class MyDataset(Dataset):
 
         return dict(jpg=target, txt=prompt, hint=source)
 
+dataset = MyDataset()
+print(len(dataset))
+
+item = dataset[1234]
+jpg = item['jpg']
+txt = item['txt']
+hint = item['hint']
+print(txt)
+print(jpg.shape)
+print(hint.shape)
