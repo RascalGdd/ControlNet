@@ -5,6 +5,7 @@ import os
 from torch.utils.data import Dataset
 
 json_path = r'./datasets/camo_diff/testjson_dict.json'
+size = 512
 
 class MyDataset(Dataset):
     def __init__(self):
@@ -30,6 +31,10 @@ class MyDataset(Dataset):
         # Do not forget that OpenCV read images in BGR order.
         source = cv2.cvtColor(source, cv2.COLOR_BGR2RGB)
         target = cv2.cvtColor(target, cv2.COLOR_BGR2RGB)
+
+        # resize the image
+        source = cv2.resize(source, (size, size))
+        target = cv2.resize(target, (size, size))
 
         # Normalize source images to [0, 1].
         source = source.astype(np.float32) / 255.0
