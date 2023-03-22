@@ -1,3 +1,3 @@
 export PYTHONPATH=
-source /cluster/home/denfan/venv/DDenv/bin/activate
-python gradio_normal2image.py
+source /cluster/home/denfan/diandian/117env/bin/activate
+python tutorial_train.py

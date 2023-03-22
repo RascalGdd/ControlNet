@@ -70,7 +70,7 @@ def process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resoluti
 
 input_image_path = r"/cluster/work/cvl/denfan/diandian/testing.jpg"
 save_path = r"/cluster/work/cvl/denfan/diandian/ControlNet/results/"
-prompt = "hidden fish in the middle"
+prompt = ""
 seed = -1
 # cv2.imread: h,w,c: 0-255
 input_image = cv2.imread(input_image_path)
@@ -79,20 +79,24 @@ bg_threshold = 0.4
 scale = 9.0
 strength = 1.0
 guess_mode = False
-ddim_steps = 20
-detect_resolution = 384
-image_resolution = 512
+ddim_steps = 1
+detect_resolution = 256
+image_resolution = 256
 num_samples = 1
 a_prompt = 'best quality, extremely detailed'
 n_prompt = 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality'
-# ips = [input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, detect_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, bg_threshold]
-output = process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, detect_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, bg_threshold)
-# cv2.imwrite(os.path.join(save_path, "template.jpg"), output[0])
-# cv2.imwrite(os.path.join(save_path, "generated.jpg"), output[1])
-template = Image.fromarray(output[0], "RGB")
-generated = Image.fromarray(output[1], "RGB")
-template.save(os.path.join(save_path, "template.jpg"))
-generated.save(os.path.join(save_path, "generated.jpg"))
+for i in range(10):
+    output = process(input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, detect_resolution, ddim_steps, guess_mode, strength, scale, seed, eta, bg_threshold)
+    template = Image.fromarray(output[0], "RGB")
+    generated = Image.fromarray(output[1], "RGB")
+    if prompt != "":
+        os.makedirs(os.path.join(save_path, prompt), exist_ok = True)
+        template.save(os.path.join(save_path, prompt, "template.jpg"))
+        generated.save(os.path.join(save_path, prompt, "generated"+"_"+str(i)+".jpg"))
+    else:
+        os.makedirs(os.path.join(save_path, "empty"), exist_ok = True)
+        template.save(os.path.join(save_path, "empty", "template.jpg"))
+        generated.save(os.path.join(save_path, "empty", "generated"+"_"+str(i)+".jpg"))
 
 # block = gr.Blocks().queue()
 # with block:
