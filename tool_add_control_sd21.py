@@ -1,12 +1,14 @@
 import sys
 import os
 
-assert len(sys.argv) == 3, 'Args are wrong.'
+assert len(sys.argv) == 4, 'Args are wrong.'
 
 input_path = sys.argv[1]
-output_path = sys.argv[2]
+input_path_inpainting = sys.argv[2]
+output_path = sys.argv[3]
 
 assert os.path.exists(input_path), 'Input model does not exist.'
+assert os.path.exists(input_path_inpainting), 'Input model_inpainting does not exist.'
 assert not os.path.exists(output_path), 'Output filename already exists.'
 assert os.path.exists(os.path.dirname(output_path)), 'Output path is not valid.'
 
@@ -30,6 +32,10 @@ pretrained_weights = torch.load(input_path)
 if 'state_dict' in pretrained_weights:
     pretrained_weights = pretrained_weights['state_dict']
 
+pretrained_weights_inpainting = torch.load(input_path_inpainting)
+if 'state_dict' in pretrained_weights_inpainting:
+    pretrained_weights_inpainting = pretrained_weights_inpainting['state_dict']
+
 scratch_dict = model.state_dict()
 
 target_dict = {}
@@ -37,13 +43,18 @@ for k in scratch_dict.keys():
     is_control, name = get_node_name(k, 'control_')
     if is_control:
         copy_k = 'model.diffusion_' + name
+        if copy_k in pretrained_weights:
+            target_dict[k] = pretrained_weights[copy_k].clone()
+        else:
+            target_dict[k] = scratch_dict[k].clone()
+            print(f'These weights in Control Block are newly added: {k}')
     else:
         copy_k = k
-    if copy_k in pretrained_weights:
-        target_dict[k] = pretrained_weights[copy_k].clone()
-    else:
-        target_dict[k] = scratch_dict[k].clone()
-        print(f'These weights are newly added: {k}')
+        if copy_k in pretrained_weights_inpainting:
+            target_dict[k] = pretrained_weights_inpainting[copy_k].clone()
+        else:
+            target_dict[k] = scratch_dict[k].clone()
+            print(f'These weights in SD are newly added: {k}')
 
 model.load_state_dict(target_dict, strict=True)
 torch.save(model.state_dict(), output_path)
