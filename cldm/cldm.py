@@ -323,7 +323,22 @@ class ControlLDM(LatentDiffusion):
         control = control.to(self.device)
         control = einops.rearrange(control, 'b h w c -> b c h w')
         control = control.to(memory_format=torch.contiguous_format).float()
-        return x, dict(c_crossattn=[c], c_concat=[control])
+
+        mask_cat = list()
+        for ck in ("mask", "hint"):
+            cc = rearrange(batch[ck], 'b h w c -> b c h w').to(memory_format=torch.contiguous_format).float()
+            if bs is not None:
+                cc = cc[:bs]
+                cc = cc.to(self.device)
+            bchw = x.shape
+            if ck != "hint":
+                cc = torch.nn.functional.interpolate(cc, size=bchw[-2:])
+            else:
+                cc = self.get_first_stage_encoding(self.encode_first_stage(cc))
+            mask_cat.append(cc)
+        mask_cat = torch.cat(mask_cat, dim=1)
+
+        return x, dict(c_crossattn=[c], c_concat=[control], c_concat_mask=[mask_cat])
 
     def apply_model(self, x_noisy, t, cond, *args, **kwargs):
         assert isinstance(cond, dict)
@@ -336,7 +351,7 @@ class ControlLDM(LatentDiffusion):
         else:
             control = self.control_model(x=x_noisy, hint=torch.cat(cond['c_concat'], 1), timesteps=t, context=cond_txt)
             control = [c * scale for c, scale in zip(control, self.control_scales)]
-            eps = diffusion_model(x=x_noisy, timesteps=t, context=cond_txt, control=control, only_mid_control=self.only_mid_control)
+            eps = diffusion_model(x=x_noisy, timesteps=t, context=cond_txt, control=torch.cat(cond['c_concat_mask'], 1), only_mid_control=self.only_mid_control)
 
         return eps
 
