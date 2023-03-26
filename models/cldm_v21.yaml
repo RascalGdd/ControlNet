@@ -9,7 +9,6 @@ model:
     first_stage_key: "jpg"
     cond_stage_key: "txt"
     control_key: "hint"
-    mask_key: "mask"
     image_size: 64
     channels: 4
     cond_stage_trainable: false
