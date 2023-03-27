@@ -350,11 +350,11 @@ class ControlLDM(LatentDiffusion):
 
         if cond['c_concat'] is None:
             eps = diffusion_model(x=x_noisy, timesteps=t, context=cond_txt, control=None, only_mid_control=self.only_mid_control)
-        elif not cond.get('c_concat_mask'):
-            control = self.control_model(x=x_noisy, hint=torch.cat(cond['c_concat'], 1), timesteps=t, context=cond_txt)
-            control = [c * scale for c, scale in zip(control, self.control_scales)]
-            # print("cond=", cond)
-            eps = diffusion_model(x=x_noisy, timesteps=t, context=cond_txt, control=control, concatenate=None, only_mid_control=self.only_mid_control)
+        # elif not cond.get('c_concat_mask'):
+        #     control = self.control_model(x=x_noisy, hint=torch.cat(cond['c_concat'], 1), timesteps=t, context=cond_txt)
+        #     control = [c * scale for c, scale in zip(control, self.control_scales)]
+        #     # print("cond=", cond)
+        #     eps = diffusion_model(x=x_noisy, timesteps=t, context=cond_txt, control=control, concatenate=None, only_mid_control=self.only_mid_control)
         else:
             control = self.control_model(x=x_noisy, hint=torch.cat(cond['c_concat'], 1), timesteps=t, context=cond_txt)
             control = [c * scale for c, scale in zip(control, self.control_scales)]
