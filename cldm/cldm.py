@@ -21,7 +21,8 @@ from ldm.models.diffusion.ddim import DDIMSampler
 
 class ControlledUnetModel(UNetModel):
     def forward(self, x, timesteps=None, context=None, control=None, only_mid_control=False, concatenate=None, **kwargs):
-        x = torch.cat([x, concatenate], dim=1)
+        if concatenate != None:
+            x = torch.cat([x, concatenate], dim=1)
         hs = []
         with torch.no_grad():
             t_emb = timestep_embedding(timesteps, self.model_channels, repeat_only=False)
@@ -349,6 +350,11 @@ class ControlLDM(LatentDiffusion):
 
         if cond['c_concat'] is None:
             eps = diffusion_model(x=x_noisy, timesteps=t, context=cond_txt, control=None, only_mid_control=self.only_mid_control)
+        elif not cond.get('c_concat_mask'):
+            control = self.control_model(x=x_noisy, hint=torch.cat(cond['c_concat'], 1), timesteps=t, context=cond_txt)
+            control = [c * scale for c, scale in zip(control, self.control_scales)]
+            # print("cond=", cond)
+            eps = diffusion_model(x=x_noisy, timesteps=t, context=cond_txt, control=control, concatenate=None, only_mid_control=self.only_mid_control)
         else:
             control = self.control_model(x=x_noisy, hint=torch.cat(cond['c_concat'], 1), timesteps=t, context=cond_txt)
             control = [c * scale for c, scale in zip(control, self.control_scales)]
