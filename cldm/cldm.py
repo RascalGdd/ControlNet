@@ -375,7 +375,7 @@ class ControlLDM(LatentDiffusion):
         print("c_crossattn", c["c_crossattn"][0].shape)
         print("c_concat_mask", c["c_concat_mask"][0].shape)
 
-        c_cat, c = c["c_concat"][0][:N], c["c_crossattn"][0][:N]
+        c_cat, c, c_concat_mask = c["c_concat"][0][:N], c["c_crossattn"][0][:N], c["c_concat_mask"][0][:N]
         N = min(z.shape[0], N)
         n_row = min(z.shape[0], n_row)
         log["reconstruction"] = self.decode_first_stage(z)
@@ -402,7 +402,7 @@ class ControlLDM(LatentDiffusion):
 
         if sample:
             # get denoise row
-            samples, z_denoise_row = self.sample_log(cond={"c_concat": [c_cat], "c_crossattn": [c]},
+            samples, z_denoise_row = self.sample_log(cond={"c_concat": [c_cat], "c_crossattn": [c], "c_concat_mask": [c_concat_mask]},
                                                      batch_size=N, ddim=use_ddim,
                                                      ddim_steps=ddim_steps, eta=ddim_eta)
             x_samples = self.decode_first_stage(samples)
