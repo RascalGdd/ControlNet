@@ -1,3 +1,3 @@
 export PYTHONPATH=
-source /cluster/home/denfan/diandian/117env/bin/activate
+source /home/diaguo/ControlNet/ControlNet/
 python tutorial_train.py
