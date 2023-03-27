@@ -352,7 +352,7 @@ class ControlLDM(LatentDiffusion):
         else:
             control = self.control_model(x=x_noisy, hint=torch.cat(cond['c_concat'], 1), timesteps=t, context=cond_txt)
             control = [c * scale for c, scale in zip(control, self.control_scales)]
-            print("cond=", cond)
+            # print("cond=", cond)
             eps = diffusion_model(x=x_noisy, timesteps=t, context=cond_txt, control=control, concatenate=torch.cat(cond['c_concat_mask'], 1), only_mid_control=self.only_mid_control)
 
         return eps
@@ -371,6 +371,10 @@ class ControlLDM(LatentDiffusion):
 
         log = dict()
         z, c = self.get_input(batch, self.first_stage_key, bs=N)
+        print("c_concat", c["c_concat"][0].shape)
+        print("c_crossattn", c["c_crossattn"][0].shape)
+        print("c_concat_mask", c["c_concat_mask"][0].shape)
+
         c_cat, c = c["c_concat"][0][:N], c["c_crossattn"][0][:N]
         N = min(z.shape[0], N)
         n_row = min(z.shape[0], n_row)
