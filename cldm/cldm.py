@@ -352,6 +352,7 @@ class ControlLDM(LatentDiffusion):
             control = self.control_model(x=x_noisy, hint=torch.cat(cond['c_concat'], 1), timesteps=t, context=cond_txt)
             control = [c * scale for c, scale in zip(control, self.control_scales)]
             eps = diffusion_model(x=x_noisy, timesteps=t, context=cond_txt, control=torch.cat(cond['c_concat_mask'], 1), only_mid_control=self.only_mid_control)
+            print("torch.cat(cond['c_concat_mask']) shape = ", torch.cat(cond['c_concat_mask']).shape)
 
         return eps
 
