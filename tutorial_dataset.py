@@ -4,7 +4,7 @@ import numpy as np
 import os
 from torch.utils.data import Dataset
 
-json_path = r'./datasets/camo_diff/testjson_dict.json'
+json_path = r'./datasets/MoCA_Video/MoCA.json'
 size = 512
 
 class MyDataset(Dataset):
@@ -47,7 +47,7 @@ class MyDataset(Dataset):
 dataset = MyDataset()
 print(len(dataset))
 
-item = dataset[1234]
+item = dataset[1]
 jpg = item['jpg']
 txt = item['txt']
 hint = item['hint']
