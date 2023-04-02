@@ -8,7 +8,7 @@ from cldm.model import create_model, load_state_dict
 
 
 # Configs
-resume_path = './models/control_sd2_inpainting_combined_ini.ckpt'
+resume_path = "/cluster/work/cvl/denfan/diandian/ControlNet/lightning_logs/version_13370988/checkpoints/epoch=112-step=35820.ckpt"
 batch_size = 4
 logger_freq = 300
 learning_rate = 1e-5
@@ -28,7 +28,7 @@ model.only_mid_control = only_mid_control
 dataset = MyDataset()
 dataloader = DataLoader(dataset, num_workers=0, batch_size=batch_size, shuffle=True)
 logger = ImageLogger(batch_frequency=logger_freq)
-trainer = pl.Trainer(gpus=2, strategy="ddp", precision=32, callbacks=[logger])
+trainer = pl.Trainer(gpus=4, strategy="ddp", precision=32, callbacks=[logger])
 
 
 # Train!
