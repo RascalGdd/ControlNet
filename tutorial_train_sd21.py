@@ -8,7 +8,7 @@ from cldm.model import create_model, load_state_dict
 
 
 # Configs
-resume_path = "/cluster/work/cvl/denfan/diandian/ControlNet/lightning_logs/version_13370988/checkpoints/epoch=112-step=35820.ckpt"
+resume_path = "/cluster/work/cvl/denfan/diandian/ControlNet/lightning_logs/1_5/checkpoints/epoch=118-step=37722.ckpt"
 batch_size = 4
 logger_freq = 300
 learning_rate = 1e-5
